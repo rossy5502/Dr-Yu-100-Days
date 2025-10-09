@@ -45,18 +45,22 @@ def add_data():
 #------------------------------Search-----------------------------------#
 def search():
     website = website_entry.get().strip().lower()
-    # Normalize the website name by removing 'www.' and '.com' if present
-    normalized_website = website.replace('www.', '').split('.com')[0]
+
+    # Normalize the website name by removing 'ww
+    # w.' and '.com' if present
+    normalized_website = website.replace('www.', '').split('.')[0]
     
     try:
         with open("data.json", "r") as data_file:
             data = json.load(data_file)
+
             # Check both the exact match and normalized version
             for site in data:
-                normalized_site = site.replace('www.', '').split('.com')[0]
+                normalized_site = site.replace('www.', '').split('.')[0]
                 if normalized_website == normalized_site:
                     email = data[site]["email"]
-                    password = data[site]["password"]
+                    password = data [site]["password"]
+                    pyperclip.copy(password)   #this will copy the password into clipboard
                     messagebox.showinfo(title=site, message=f"Email: {email}\nPassword: {password}")
                     return
             messagebox.showinfo(title="Error", message="No data found for this website")
@@ -77,8 +81,8 @@ canvas.grid(row=0,column=1,pady=(0,20))
 website_label = Label(text="Website:",font=("Arial",12,"bold"))
 website_label.grid(row=1, column=0, sticky="e", padx=5, pady=5)
 website_entry = Entry(width=35,font=("Arial",12))
-website_entry.insert(0,"www.")
-website_entry.grid(row=1, column=1, columnspan=2, sticky="w", padx=5, pady=5)
+
+website_entry.grid(row=1, column=1, sticky="w", padx=5, pady=5)
 website_entry.focus()
 
 # Search
