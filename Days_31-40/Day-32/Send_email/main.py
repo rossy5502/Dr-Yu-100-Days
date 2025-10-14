@@ -54,6 +54,8 @@ def send_email(quote_of_the_day):
         server.send_message(msg)
 
     print(f"SUCCESS :Email sent \n {quote_of_the_day}!")
+    # for the stmp to work on local server run the below prompt first
+    # py -m aiosmtpd -n -l localhost:8025
 def main() -> None:
     if weekday:
         """Main function to display a random quote."""
@@ -67,7 +69,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    #for the stmp to work on local server run the below prompt first
-    #py -m aiosmtpd -n -l localhost:8025
+
 
 
