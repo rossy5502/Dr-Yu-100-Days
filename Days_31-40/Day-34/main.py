@@ -20,9 +20,6 @@ def main():
     quiz = QuizBrain(question_bank)
     quiz_interface = QuizInterface(quiz)
 
-    while quiz.still_has_questions():
-        quiz_interface.get_next_question()
-
 
 if __name__ == "__main__":
     main()
