@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Aircraft Meal Distribution</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 50%, #DDD6FE 100%);
+            min-height: 100vh;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .header-icon {
+            display: inline-block;
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .section-title span {
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .input-row label {
+            flex: 0 0 100px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .input-row input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .input-row .unit {
+            flex: 0 0 50px;
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+
+        .total-badge {
+            background: linear-gradient(135deg, #DDD6FE, #C7D2FE);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .total-badge p {
+            font-size: 18px;
+            font-weight: 700;
+            color: #5B21B6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #EF4444, #EC4899);
+        }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+        }
+
+        .results {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results h2 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+        }
+
+        .section-result {
+            background: linear-gradient(135deg, #F9FAFB, #F3F4F6);
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .section-badge {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .meal-box {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .meal-box .label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .meal-box .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #7C3AED;
+        }
+
+        .section-total {
+            text-align: center;
+            font-weight: 700;
+            color: #DC2626;
+            margin-top: 8px;
+        }
+
+        .verification {
+            background: linear-gradient(135deg, #EFF6FF, #E0E7FF);
+            border: 2px solid #C7D2FE;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .verification h3 {
+            text-align: center;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 16px;
+        }
+
+        .verify-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .verify-row .label {
+            color: #4B5563;
+        }
+
+        .verify-row .value {
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="card">
+            <div class="header">
+                <div class="header-icon">✈️</div>
+                <h1>Aircraft Meal Distribution</h1>
+                <p>Calculate fair meal distribution across cabin sections</p>
+            </div>
+        </div>
+
+        <!-- Meal Options -->
+        <div class="card">
+            <div class="section-title">
+                <span>🍽️</span>
+                <span>Meal Options</span>
+            </div>
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Option 1</label>
+                    <input type="number" id="option1" value="23" min="0">
+                </div>
+                <div class="input-row">
+                    <label>Option 2</label>
+                    <input type="number" id="option2" value="17" min="0">
+                </div>
+                <div class="input-row">
+                    <label>Option 3</label>
+                    <input type="number" id="option3" value="10" min="0">
+                </div>
+            </div>
+            <div class="total-badge">
+                <p id="totalMeals">Total Meals: 50</p>
+            </div>
+        </div>
+
+        <!-- Cabin Sections -->
+        <div class="card">
+            <div class="section-title">
+                <span>💺</span>
+                <span>Cabin Sections</span>
+            </div>
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Section 1</label>
+                    <input type="number" id="section1" value="8" min="0">
+                    <span class="unit">seats</span>
+                </div>
+                <div class="input-row">
+                    <label>Section 2</label>
+                    <input type="number" id="section2" value="16" min="0">
+                    <span class="unit">seats</span>
+                </div>
+                <div class="input-row">
+                    <label>Section 3</label>
+                    <input type="number" id="section3" value="16" min="0">
+                    <span class="unit">seats</span>
+                </div>
+                <div class="input-row">
+                    <label>Section 4</label>
+                    <input type="number" id="section4" value="8" min="0">
+                    <span class="unit">seats</span>
+                </div>
+            </div>
+            <div class="total-badge">
+                <p id="totalSeats">Total Seats: 48</p>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <button class="btn btn-clear" onclick="clearAll()">
+                <span>🧹</span>
+                <span>Clear All</span>
+            </button>
+            <button class="btn btn-calculate" onclick="calculate()">
+                <span>📊</span>
+                <span>Calculate</span>
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="card hidden results">
+            <h2>Distribution Results</h2>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update totals on input change
+        const mealInputs = ['option1', 'option2', 'option3'];
+        const sectionInputs = ['section1', 'section2', 'section3', 'section4'];
+
+        mealInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', updateTotalMeals);
+        });
+
+        sectionInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', updateTotalSeats);
+        });
+
+        function updateTotalMeals() {
+            const total = mealInputs.reduce((sum, id) => {
+                return sum + (parseInt(document.getElementById(id).value) || 0);
+            }, 0);
+            document.getElementById('totalMeals').textContent = `Total Meals: ${total}`;
+        }
+
+        function updateTotalSeats() {
+            const total = sectionInputs.reduce((sum, id) => {
+                return sum + (parseInt(document.getElementById(id).value) || 0);
+            }, 0);
+            document.getElementById('totalSeats').textContent = `Total Seats: ${total}`;
+        }
+
+        function clearAll() {
+            mealInputs.forEach(id => document.getElementById(id).value = '');
+            sectionInputs.forEach(id => document.getElementById(id).value = '');
+            updateTotalMeals();
+            updateTotalSeats();
+            document.getElementById('results').classList.add('hidden');
+        }
+
+        function calculate() {
+            const meals = {
+                option1: parseInt(document.getElementById('option1').value) || 0,
+                option2: parseInt(document.getElementById('option2').value) || 0,
+                option3: parseInt(document.getElementById('option3').value) || 0
+            };
+
+            const sections = sectionInputs.map(id => parseInt(document.getElementById(id).value) || 0);
+            const totalSeats = sections.reduce((a, b) => a + b, 0);
+
+            if (totalSeats === 0) {
+                alert('Please enter at least one section with seats');
+                return;
+            }
+
+            const distribution = {};
+
+            // Initialize
+            sections.forEach((seats, i) => {
+                distribution[`Section ${i + 1}`] = {
+                    seats: seats,
+                    option1: 0,
+                    option2: 0,
+                    option3: 0
+                };
+            });
+
+            // Distribute each meal type
+            ['option1', 'option2', 'option3'].forEach(mealType => {
+                const totalMeals = meals[mealType];
+                if (totalMeals === 0) return;
+
+                let allocated = 0;
+
+                // Base allocation
+                sections.forEach((seats, i) => {
+                    const baseMeals = Math.floor((totalMeals * seats) / totalSeats);
+                    distribution[`Section ${i + 1}`][mealType] = baseMeals;
+                    allocated += baseMeals;
+                });
+
+                // Distribute remaining
+                const remaining = totalMeals - allocated;
+                const fractionals = sections.map((seats, i) => {
+                    const exactShare = (totalMeals * seats) / totalSeats;
+                    const currentAlloc = distribution[`Section ${i + 1}`][mealType];
+                    return {
+                        index: i,
+                        seats: seats,
+                        fractional: exactShare - currentAlloc
+                    };
+                });
+
+                fractionals.sort((a, b) => b.fractional - a.fractional || b.seats - a.seats);
+
+                for (let i = 0; i < remaining; i++) {
+                    const sectionIdx = fractionals[i].index;
+                    distribution[`Section ${sectionIdx + 1}`][mealType]++;
+                }
+            });
+
+            displayResults(distribution, meals);
+        }
+
+        function displayResults(distribution, meals) {
+            let html = '';
+
+            Object.entries(distribution).forEach(([sectionName, data]) => {
+                const sectionTotal = data.option1 + data.option2 + data.option3;
+                html += `
+                    <div class="section-result">
+                        <div class="section-header">
+                            <h3>${sectionName}</h3>
+                            <span class="section-badge">${data.seats} seats</span>
+                        </div>
+                        <div class="meal-grid">
+                            <div class="meal-box">
+                                <div class="label">Option 1</div>
+                                <div class="value">${data.option1}</div>
+                            </div>
+                            <div class="meal-box">
+                                <div class="label">Option 2</div>
+                                <div class="value">${data.option2}</div>
+                            </div>
+                            <div class="meal-box">
+                                <div class="label">Option 3</div>
+                                <div class="value">${data.option3}</div>
+                            </div>
+                        </div>
+                        <div class="section-total">Total: ${sectionTotal} meals</div>
+                    </div>
+                `;
+            });
+
+            // Verification
+            const totals = {
+                option1: Object.values(distribution).reduce((sum, d) => sum + d.option1, 0),
+                option2: Object.values(distribution).reduce((sum, d) => sum + d.option2, 0),
+                option3: Object.values(distribution).reduce((sum, d) => sum + d.option3, 0)
+            };
+
+            const isCorrect = totals.option1 === meals.option1 && 
+                            totals.option2 === meals.option2 && 
+                            totals.option3 === meals.option3;
+
+            html += `
+                <div class="verification">
+                    <h3>Verification</h3>
+                    <div class="verify-row">
+                        <span class="label">Option 1:</span>
+                        <span class="value">${totals.option1} / ${meals.option1}</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="label">Option 2:</span>
+                        <span class="value">${totals.option2} / ${meals.option2}</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="label">Option 3:</span>
+                        <span class="value">${totals.option3} / ${meals.option3}</span>
+                    </div>
+                    <div class="status ${isCorrect ? 'success' : 'error'}">
+                        <span>${isCorrect ? '✅' : '⚠️'}</span>
+                        <span>${isCorrect ? 'All meals distributed correctly!' : 'Distribution mismatch detected'}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
