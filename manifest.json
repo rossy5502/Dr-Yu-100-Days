@@ -1,0 +1,27 @@
+{
+  "name": "Aircraft Meal Distribution Calculator",
+  "short_name": "Meal Calc",
+  "description": "Calculate fair meal distribution across aircraft cabin sections",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#4F46E5",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "scope": "/",
+  "lang": "en-US"
+}
